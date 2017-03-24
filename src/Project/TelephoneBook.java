@@ -9,22 +9,24 @@ import java.io.*;
 import java.util.Scanner;
 
 
+class TelephoneBook {
 
-
-
-public class TelephoneBook {
+    private BST bst;
+    private HashTableLinkedList hashTableLinkedList;
+    private HashTableBST hashTableBST;
 
     private BookType bookType;
-    private BST bst;
-    private HashTable hashTable;
+
     private BufferedReader inputFile;
     private BufferedWriter outputFile;
 
-    public TelephoneBook(int bookTypeSelection, BufferedReader inputFile, BufferedWriter bw) {
+    TelephoneBook(int bookTypeSelection, BufferedReader inputFile, BufferedWriter bw) {
         if (bookTypeSelection == 1) {
-            this.bookType = BookType.HASHTABLE;
-        } else {
             this.bookType = BookType.BINARYSEARCHTREE;
+        } else if (bookTypeSelection == 2) {
+            this.bookType = BookType.HASHTABLELINKEDLIST;
+        } else if (bookTypeSelection == 3) {
+            this.bookType = BookType.HASHTABLEBST;
         }
 
         this.inputFile = inputFile;
@@ -34,8 +36,9 @@ public class TelephoneBook {
 
 
     private void init() {
-        this.hashTable = new HashTable();
+        this.hashTableLinkedList = new HashTableLinkedList();
         this.bst = new BST();
+        this.hashTableBST = new HashTableBST();
 
         try {
 
@@ -44,12 +47,16 @@ public class TelephoneBook {
             while (line != null) {
                 PersonNode node = new PersonNode(line, null);
                 switch (this.bookType) {
-                    case HASHTABLE:
-                        hashTable.add(node);
-                        break;
-
                     case BINARYSEARCHTREE:
                         bst.add(node);
+                        break;
+
+                    case HASHTABLELINKEDLIST:
+                        hashTableLinkedList.add(node);
+                        break;
+
+                    case HASHTABLEBST:
+                        hashTableBST.add(node);
                         break;
 
                     default:
@@ -63,7 +70,7 @@ public class TelephoneBook {
         }
     }
 
-    public void add() {
+    void add() {
 
         String name, address, phoneNum;
         Scanner sc = new Scanner(System.in);
@@ -80,20 +87,24 @@ public class TelephoneBook {
         PersonNode node = new PersonNode(name + "," + address + "," + phoneNum , null);
 
         switch (this.bookType) {
-            case HASHTABLE: {
-                hashTable.add(node);
-                break;
-            }
-            case BINARYSEARCHTREE: {
+            case BINARYSEARCHTREE:
                 bst.add(node);
                 break;
-            }
+
+            case HASHTABLELINKEDLIST:
+                hashTableLinkedList.add(node);
+                break;
+
+            case HASHTABLEBST:
+                hashTableBST.add(node);
+                break;
+
             default:
                 break;
         }
     }
 
-    public void search() {
+    void search() {
         Scanner searchScan = new Scanner(System.in);
         System.out.print("Enter the full name to search: ");
 
@@ -101,8 +112,16 @@ public class TelephoneBook {
         PersonNode searchPerson = null;
 
         switch (this.bookType) {
-            case HASHTABLE:
-                searchPerson = hashTable.search(key);
+            case BINARYSEARCHTREE:
+                searchPerson = (PersonNode)bst.search(key);
+                break;
+
+            case HASHTABLELINKEDLIST:
+                searchPerson = hashTableLinkedList.search(key);
+                break;
+
+            case HASHTABLEBST:
+                searchPerson = hashTableBST.search(key);
                 break;
 
             default:
@@ -116,29 +135,41 @@ public class TelephoneBook {
         }
     }
 
-    public void delete() {
+    void delete() {
         Scanner delScan = new Scanner(System.in);
         System.out.print("Enter the name to be deleted: ");
 
         String delName = delScan.nextLine();
 
         switch (this.bookType) {
-            case HASHTABLE:
-                hashTable.delete(delName);
-                break;
-            default:
-                break;
-        }
-    }
-
-    public void display() {
-        switch (this.bookType) {
-            case HASHTABLE:
-                hashTable.display();
-                break;
-
             case BINARYSEARCHTREE:
-                bst.display(bst.getRoot());
+                bst.remove(delName);
+                break;
+
+            case HASHTABLELINKEDLIST:
+                hashTableLinkedList.delete(delName);
+                break;
+
+            case HASHTABLEBST:
+                hashTableBST.delete(delName);
+            default:
+                break;
+        }
+    }
+
+    void display() {
+        switch (this.bookType) {
+            case BINARYSEARCHTREE:
+                bst.display(bst.root);
+                break;
+
+
+            case HASHTABLELINKEDLIST:
+                hashTableLinkedList.display();
+                break;
+
+            case HASHTABLEBST:
+                hashTableBST.display();
                 break;
 
             default:
@@ -146,26 +177,29 @@ public class TelephoneBook {
         }
     }
 
-    public void save() {
+    void save() {
             switch (this.bookType) {
 
-                case HASHTABLE:
-                    hashTable.printToFile(outputFile);
+                case HASHTABLELINKEDLIST:
+                    hashTableLinkedList.printToFile(outputFile);
                     break;
                 default:
+                    bst.printToFile(bst.root, outputFile);
                     break;
             }
 
 
     }
 
-    public BookType getType() { return bookType; }
+    BookType getType() { return bookType; }
 
     public enum BookType {
-        HASHTABLE ("Hash Table"),
-        BINARYSEARCHTREE ("Binary Search Tree");
+        BINARYSEARCHTREE ("Binary Search Tree"),
+        HASHTABLELINKEDLIST ("Hash Table - Linked List"),
+        HASHTABLEBST("Hash Table - BST");
 
-        private final String bookType;
+
+        final String bookType;
 
         BookType(String bookType) {
             this.bookType = bookType;

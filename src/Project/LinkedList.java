@@ -4,61 +4,61 @@
 
 package Project;
 
-import java.util.Iterator;
-import java.util.NoSuchElementException;
+class LinkedList {
 
-public class LinkedList implements Iterable<PersonNode>{
-	
-	private PersonNode head;
+    PersonNode head;
 
-	public LinkedList() {
-		this.head = null;
-	}
+    LinkedList() {
+        this.head = null;
+    }
+
 
     /**
      * Adds a node to the beginning of the Linked List.
      *
      * @param newNode The node to be added.
-    */
-	public void add(PersonNode newNode) {
+     */
+    void add(PersonNode newNode) {
 
-	    //If there is no node at the head of the list,
+        //If there is no node at the head of the list,
         //insert new node as head
-	    if (head == null) {
+        if (head == null) {
             head = newNode;
         }
 
         //If there is a node at head, set the
-        //new node to point to the current head,
+        //current head as a child of the new head,
         //then make the new node the new head
         else {
-            newNode.setNext(head);
+            newNode.nextPerson = head;
             head = newNode;
         }
     }
+
+
 
     /**
      * Iterate through the LinkedList to find node
      * which has the same name as string parameter
      *
-     * @param searchName
+     * @param searchName The name to be searched
      * @return The node with matching name as
-     *         searched name
+     * searched name
      */
-	public PersonNode get(String searchName) {
+    PersonNode get(String searchName) {
 
-	    PersonNode nptr = head;
-
-	    while (nptr != null) {
-	        if(nptr.getName().equals(searchName)) {
+        PersonNode nptr = head;  //node pointer
+        while (nptr != null) {
+            if (nptr.name.equals(searchName)) {
                 return nptr;
-            }
-            else {
-	            nptr = nptr.getNext();
+            } else {
+                nptr = nptr.nextPerson;
             }
         }
         return null;
     }
+
+
 
     /**
      * Iterates through linked list to find node
@@ -68,92 +68,61 @@ public class LinkedList implements Iterable<PersonNode>{
      * The deleted node will be removed by the JVM
      * during garbage collection.
      *
-     * @param delName
+     * @param delName Name to be deleted
      */
-	public void remove(String delName) {
+    void remove(String delName) {
 
-	    PersonNode nptr = head;
-	    PersonNode nptrpar = head;
+        PersonNode nptr = head;      //node pointer for head
+        PersonNode nptrpar = head;   //node point for parent
 
-	    while (nptr != null) {
+        while (nptr != null) {
 
-	        if (head.getName().equals(delName)){
-	            head = nptr.getNext();
-	            System.out.println("Deleting node " + delName);
-	            return;
-            }
+            if (head.name.equals(delName)) { //delete head
+                head = nptr.nextPerson;
+                System.out.println("Deleting node " + delName);
+                return;
+            } else if (nptr.nextPerson != null) {
+                if (nptr.nextPerson.name.equals(delName)) {
 
-            else if (nptr.getNext() != null){
-	            if (nptr.getNext().getName().equals(delName)){
-	                nptrpar.setNext(nptr.getNext());
+                    //set parent of deleted node to point to child
+                    //of deleted node
+                    nptrpar.nextPerson = nptr.nextPerson;
                     System.out.println("Deleting node " + delName);
-	                return;
+                    return;
                 }
             }
-
+            //advance node pointers one node each
             nptrpar = nptr;
-	        nptr = nptr.getNext();
+            nptr = nptr.nextPerson;
         }
-
         System.out.println("Name not found.");
     }
+
+
 
     /**
      * Iterates through the LinkedList and adds
      * names of nodes to a StringBuffer, returning
      * the toString() representation of the Buffer.
+     *
      * @return string representation of a LinkedList
      */
-	public String toString() {
-	    PersonNode nptr = head;
-	    StringBuffer sb = new StringBuffer();
-	    int counter = 1;
-	    while (nptr != null) {
+    public String toString() {
+        PersonNode nptr = head;
+        StringBuffer sb = new StringBuffer();
+        int counter = 1;
+
+        while (nptr != null) {
             sb.append(" -> ").append(nptr.toString());
             counter++;
-            if (counter % 3 == 0) {
+            if (counter % 3 == 0) { //every 3 nodes, append a newLine to the string.
                 sb.append("\n ");
             }
-
-            nptr = nptr.getNext();
+            nptr = nptr.nextPerson;
         }
-
         return sb.toString();
     }
-
-    /**
-     * Getter for the private field head
-     *
-     * @return The node being pointed to by head.
-     */
-    public PersonNode getHead() { return head; }
-
-
-
-    public Iterator<PersonNode> iterator() {
-        return new LinkListIterator();
-    }
-
-    private class LinkListIterator implements Iterator<PersonNode> {
-
-        private PersonNode nptr;
-
-        public LinkListIterator() {
-            this.nptr = LinkedList.this.head;
-        }
-
-        @Override
-        public boolean hasNext() {
-            return (nptr.getNext() != null);
-        }
-
-        @Override
-        public PersonNode next() {
-            if (!this.hasNext()) {
-                throw new NoSuchElementException();
-            }
-
-            return nptr.getNext();
-        }
-    }
 }
+
+
+
