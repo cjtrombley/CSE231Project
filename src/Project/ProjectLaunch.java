@@ -5,11 +5,19 @@
 
 package Project;
 
+import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Scanner;
 
 public class ProjectLaunch {
 
   private TelephoneBook phoneBook;
+
 
 	public static void main(String[] args) {
 
@@ -18,6 +26,7 @@ public class ProjectLaunch {
         }
 
         ProjectLaunch pl = new ProjectLaunch();
+	   // File inputFile = new File(pl.getClass().getResource(args[0]).toString());
         Scanner sc = new Scanner(System.in);
 
         System.out.println("Thank you for using TelephoneBook v1.0");
@@ -26,7 +35,44 @@ public class ProjectLaunch {
         System.out.println("2: Binary Search Tree");
         System.out.print("Please enter a selection: ");
 
-        pl.phoneBook = new TelephoneBook(sc.nextInt(), args[0], args[1]);
+
+        //Path inputPath = Paths.get(args[0]);
+       // Path outputPath = Paths.get(args[1]);
+
+        //URL url = ProjectLaunch.getClass().getResource(args[0]);
+        //System.out.println(url.toString());
+
+        //System.out.println(inputPath.toString() + " " + outputPath.toString());
+
+        //Class cls = pl.getClass();
+        //URL url = cls.getResource(args[0]);
+       // String string = (args[0]);
+
+        String string = pl.getClass().getResource("../res/projectdata.csv").toString();
+        BufferedReader br = null;
+        BufferedWriter bw = null;
+        try {
+            //Create a BufferfedReader to read the input file indicated in args[0]
+            br = new BufferedReader( new FileReader( new File (args[0])));
+
+            //Create a BufferedWriter to save the directory to the
+            //output file indicated in args[1]
+
+            File outputFile = new File(args[1]);
+
+            if(!outputFile.exists()) {
+                outputFile.createNewFile();
+            }
+
+            bw = new BufferedWriter ( new FileWriter ( outputFile));
+
+            pl.phoneBook = new TelephoneBook(sc.nextInt(), br, bw);
+
+            bw.close();
+            br.close();
+        } catch (IOException e) {
+            System.err.println("IO exception");
+        }
 
         Boolean continueProgram = true;
 

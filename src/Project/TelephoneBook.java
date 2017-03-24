@@ -5,23 +5,22 @@
 
 package Project;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.Scanner;
 
-//import static Project.BookType.HASHTABLE;
+
+
+
 
 public class TelephoneBook {
 
     private BookType bookType;
     private BST bst;
     private HashTable hashTable;
-    private String inputFile;
-    private String outputFile;
+    private BufferedReader inputFile;
+    private BufferedWriter outputFile;
 
-    public TelephoneBook(int bookTypeSelection, String inputFile, String outputFile) {
+    public TelephoneBook(int bookTypeSelection, BufferedReader inputFile, BufferedWriter bw) {
         if (bookTypeSelection == 1) {
             this.bookType = BookType.HASHTABLE;
         } else {
@@ -29,7 +28,7 @@ public class TelephoneBook {
         }
 
         this.inputFile = inputFile;
-        this.outputFile = outputFile;
+        this.outputFile = bw;
         init();
     }
 
@@ -39,8 +38,8 @@ public class TelephoneBook {
         this.bst = new BST();
 
         try {
-            BufferedReader br = new BufferedReader(new FileReader(new File(inputFile)));
-            String line = br.readLine();
+
+            String line = inputFile.readLine();
 
             while (line != null) {
                 PersonNode node = new PersonNode(line, null);
@@ -57,7 +56,7 @@ public class TelephoneBook {
                         break;
                 }
 
-                line = br.readLine();
+                line = inputFile.readLine();
             }
         } catch (IOException e) {
             System.err.println("Error locating file.");
@@ -148,22 +147,15 @@ public class TelephoneBook {
     }
 
     public void save() {
-        try {
-            File file = new File(outputFile);
-
-            if (!file.exists()) {
-                file.createNewFile();
-            }
             switch (this.bookType) {
+
                 case HASHTABLE:
-                    hashTable.printToFile(file);
+                    hashTable.printToFile(outputFile);
                     break;
                 default:
                     break;
             }
-        } catch(IOException e) {
-            System.err.println("IOException");
-        }
+
 
     }
 

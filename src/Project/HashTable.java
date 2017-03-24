@@ -54,10 +54,9 @@ public class HashTable {
         hashTable[delTableHash].remove(delName);
     }
 
-    public void printToFile(File file) {
-        try {
-            BufferedWriter bw = new BufferedWriter(new FileWriter(file));
+    public void printToFile(BufferedWriter bw) {
 
+        try{
             for (int i = 0; i < HASHSIZE; i++) {
                 PersonNode nptr = hashTable[i].getHead();
 
