@@ -14,6 +14,8 @@ class TelephoneBook {
     private BST bst;
     private HashTableLinkedList hashTableLinkedList;
     private HashTableBST hashTableBST;
+    private HashTableLinearProbing hashTableLinearProbing;
+    private ProjectLaunch pl;
 
     private BookType bookType;
 
@@ -21,12 +23,42 @@ class TelephoneBook {
     private BufferedWriter outputFile;
 
     TelephoneBook(int bookTypeSelection, BufferedReader inputFile, BufferedWriter bw) {
+
+
         if (bookTypeSelection == 1) {
             this.bookType = BookType.BINARYSEARCHTREE;
-        } else if (bookTypeSelection == 2) {
+            this.bst = new BST();
+        }
+        else if (bookTypeSelection == 2) {
             this.bookType = BookType.HASHTABLELINKEDLIST;
-        } else if (bookTypeSelection == 3) {
+            this.hashTableLinkedList = new HashTableLinkedList();
+        }
+        else if (bookTypeSelection == 3) {
             this.bookType = BookType.HASHTABLEBST;
+            this.hashTableBST = new HashTableBST();
+        }
+        else if (bookTypeSelection == 4) {
+            this.bookType = BookType.HASHTABLELINEARPROBING;
+
+
+            /*
+            try{
+                System.out.print("Enter table size for Hash Table: ");
+                int size = sc2.nextInt();
+
+                //System.out.println("Enter rehashing factor (int): ");
+                //int rehashFactor = sc.nextInt();
+
+                int rehashFactor = 3;
+                this.hashTableLinearProbing = new HashTableLinearProbing(size, rehashFactor);
+
+                sc2.close();
+
+
+
+            } catch(Exception e){
+                System.err.println("Error");
+            }*/
         }
 
         this.inputFile = inputFile;
@@ -36,14 +68,8 @@ class TelephoneBook {
 
 
     private void init() {
-        this.hashTableLinkedList = new HashTableLinkedList();
-        this.bst = new BST();
-        this.hashTableBST = new HashTableBST();
-
         try {
-
             String line = inputFile.readLine();
-
             while (line != null) {
                 PersonNode node = new PersonNode(line, null);
                 switch (this.bookType) {
@@ -58,6 +84,10 @@ class TelephoneBook {
                     case HASHTABLEBST:
                         hashTableBST.add(node);
                         break;
+
+                    case HASHTABLELINEARPROBING:
+                            hashTableLinearProbing.add(node);
+                            break;
 
                     default:
                         break;
@@ -99,6 +129,9 @@ class TelephoneBook {
                 hashTableBST.add(node);
                 break;
 
+            case HASHTABLELINEARPROBING:
+                hashTableLinearProbing.add(node);
+
             default:
                 break;
         }
@@ -124,6 +157,8 @@ class TelephoneBook {
                 searchPerson = hashTableBST.search(key);
                 break;
 
+            case HASHTABLELINEARPROBING:
+                searchPerson = hashTableLinearProbing.search(key);
             default:
                 break;
         }
@@ -152,6 +187,10 @@ class TelephoneBook {
 
             case HASHTABLEBST:
                 hashTableBST.delete(delName);
+
+            case HASHTABLELINEARPROBING:
+                hashTableLinearProbing.delete(delName);
+
             default:
                 break;
         }
@@ -170,6 +209,11 @@ class TelephoneBook {
 
             case HASHTABLEBST:
                 hashTableBST.display();
+                break;
+
+
+            case HASHTABLELINEARPROBING:
+                hashTableLinearProbing.display();
                 break;
 
             default:
@@ -196,7 +240,8 @@ class TelephoneBook {
     public enum BookType {
         BINARYSEARCHTREE ("Binary Search Tree"),
         HASHTABLELINKEDLIST ("Hash Table - Linked List"),
-        HASHTABLEBST("Hash Table - BST");
+        HASHTABLEBST("Hash Table - BST"),
+        HASHTABLELINEARPROBING ("Hash Table - Linear Probing");
 
 
         final String bookType;

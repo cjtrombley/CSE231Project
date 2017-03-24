@@ -108,7 +108,7 @@ class LinkedList {
      * @return string representation of a LinkedList
      */
     public String toString() {
-        PersonNode nptr = head;
+        PersonNode nptr = head;                 //node pointer
         StringBuffer sb = new StringBuffer();
         int counter = 1;
 

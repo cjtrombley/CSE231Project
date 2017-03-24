@@ -31,6 +31,10 @@ class PersonNode {
      }
 
 
-
-	public String toString() { return key + ", " + address + ", " + phoneNumber; }
+    /**
+     * String representation of PersonNode object.
+     *
+     * @return toString() representation of a PersonNode
+     */
+	public String toString() { return key%701 + ", " + address + ", " + phoneNumber; }
 }

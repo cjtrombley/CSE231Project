@@ -10,7 +10,7 @@ import java.util.Scanner;
 
 public class ProjectLaunch {
 
-  private TelephoneBook phoneBook;
+  TelephoneBook phoneBook;
 
 
     /**
@@ -32,6 +32,7 @@ public class ProjectLaunch {
         System.out.println("1: Binary Search Tree");
         System.out.println("2: Hash Table w/ Chaining - Linked List");
         System.out.println("3: Hash Table w/ Chaining - BST");
+        System.out.println("4: Hash Table w/ Linear Probing");
 
         System.out.print("Please enter a selection: ");
 
