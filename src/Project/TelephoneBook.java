@@ -6,11 +6,13 @@
 package Project;
 
 import java.io.*;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 
 class TelephoneBook {
 
+    //Class members
     private BST bst;
     private HashTableLinkedList hashTableLinkedList;
     private HashTableBST hashTableBST;
@@ -21,57 +23,60 @@ class TelephoneBook {
 
     private BufferedReader inputFile;
     private BufferedWriter outputFile;
+    private Scanner sc;
 
-    TelephoneBook(int bookTypeSelection, BufferedReader inputFile, BufferedWriter bw) {
 
+    /**
+     *
+     * @param bookTypeSelection   Int value representing Phone Book Type
+     * @param inputFile           BufferedReader attached to input file
+     * @param sc                  Scanner attached to System.in
+     */
+    TelephoneBook(int bookTypeSelection, BufferedReader inputFile, BufferedWriter bw, Scanner sc) {
 
-        if (bookTypeSelection == 1) {
+        //Determine which type of phone book to make based on the selection input
+        //Initialize the appropriate book type
+
+        if (bookTypeSelection == 1) { //BST
             this.bookType = BookType.BINARYSEARCHTREE;
             this.bst = new BST();
         }
-        else if (bookTypeSelection == 2) {
+        else if (bookTypeSelection == 2) { //Hash Table with Linked List chains
             this.bookType = BookType.HASHTABLELINKEDLIST;
             this.hashTableLinkedList = new HashTableLinkedList();
         }
-        else if (bookTypeSelection == 3) {
+        else if (bookTypeSelection == 3) { //Hash Table with BST chains
             this.bookType = BookType.HASHTABLEBST;
             this.hashTableBST = new HashTableBST();
         }
-        else if (bookTypeSelection == 4) {
+        else if (bookTypeSelection == 4) { //Hash Table with Linear Probing
             this.bookType = BookType.HASHTABLELINEARPROBING;
 
-
-            /*
             try{
                 System.out.print("Enter table size for Hash Table: ");
-                int size = sc2.nextInt();
+                int size = Integer.parseInt(sc.nextLine());
+                this.hashTableLinearProbing = new HashTableLinearProbing(size);
 
-                //System.out.println("Enter rehashing factor (int): ");
-                //int rehashFactor = sc.nextInt();
-
-                int rehashFactor = 3;
-                this.hashTableLinearProbing = new HashTableLinearProbing(size, rehashFactor);
-
-                sc2.close();
-
-
-
-            } catch(Exception e){
-                System.err.println("Error");
-            }*/
+            } catch(InputMismatchException e){
+                System.err.println("Please input an integer value.");
+            }
         }
 
         this.inputFile = inputFile;
         this.outputFile = bw;
+        this.sc = sc;
         init();
     }
 
-
+    /**
+     *
+     *
+     */
     private void init() {
         try {
             String line = inputFile.readLine();
             while (line != null) {
-                PersonNode node = new PersonNode(line, null);
+                PersonNode node = new PersonNode(line);
                 switch (this.bookType) {
                     case BINARYSEARCHTREE:
                         bst.add(node);
@@ -103,7 +108,6 @@ class TelephoneBook {
     void add() {
 
         String name, address, phoneNum;
-        Scanner sc = new Scanner(System.in);
 
         System.out.print("Enter person's name: ");
         name = sc.nextLine();
@@ -114,7 +118,7 @@ class TelephoneBook {
         System.out.print("Enter person's phone number: ");
         phoneNum = sc.nextLine();
 
-        PersonNode node = new PersonNode(name + "," + address + "," + phoneNum , null);
+        PersonNode node = new PersonNode(name + "," + address + "," + phoneNum);
 
         switch (this.bookType) {
             case BINARYSEARCHTREE:
@@ -131,17 +135,56 @@ class TelephoneBook {
 
             case HASHTABLELINEARPROBING:
                 hashTableLinearProbing.add(node);
+                break;
 
             default:
                 break;
         }
     }
 
+    void update() {
+        System.out.print("Enter name to be updated: ");
+        String newName = sc.nextLine();
+
+        System.out.print("Enter new address: ");
+        String newAddress = sc.nextLine();
+
+        System.out.print("Enter new phone number: ");
+        String newNumber = sc.nextLine();
+
+
+        PersonNode updatedNode = new PersonNode(newName + "," + newAddress + ", " + newNumber);
+
+
+        switch (this.bookType) {
+            case BINARYSEARCHTREE:
+                bst.update(updatedNode);
+                break;
+
+            case HASHTABLELINKEDLIST:
+                hashTableLinkedList.update(updatedNode);
+                break;
+
+            case HASHTABLEBST:
+                hashTableBST.update(updatedNode);
+                break;
+
+            case HASHTABLELINEARPROBING:
+                hashTableLinearProbing.update(updatedNode);
+                break;
+
+            default:
+                break;
+
+
+        }
+    }
+
     void search() {
-        Scanner searchScan = new Scanner(System.in);
+
         System.out.print("Enter the full name to search: ");
 
-        String key = searchScan.nextLine();
+        String key = sc.nextLine();
         PersonNode searchPerson = null;
 
         switch (this.bookType) {
@@ -159,6 +202,8 @@ class TelephoneBook {
 
             case HASHTABLELINEARPROBING:
                 searchPerson = hashTableLinearProbing.search(key);
+                break;
+
             default:
                 break;
         }
@@ -171,10 +216,10 @@ class TelephoneBook {
     }
 
     void delete() {
-        Scanner delScan = new Scanner(System.in);
+
         System.out.print("Enter the name to be deleted: ");
 
-        String delName = delScan.nextLine();
+        String delName = sc.nextLine();
 
         switch (this.bookType) {
             case BINARYSEARCHTREE:

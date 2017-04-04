@@ -1,21 +1,36 @@
-/**
- * Created by cjt on 3/10/2017.
- */
-
 package Project;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
 
+
+/**
+ * BST
+ *
+ * This class represents a single Binary Search Tree.
+ * The class implements the following public operations:
+ *
+ * add()
+ * update()
+ * display()
+ * search()
+ * remove()
+ * printToFile()
+ *
+ * @author      Cody Trombley
+ */
 class BST {
 
+    //Class members
     BSTNode root;
 
+
+    /**
+     * Default constructor, set root to null.
+     */
     BST() {
         root = null;
     }
-
-
 
 
     /**
@@ -31,8 +46,17 @@ class BST {
              BSTNode nptr = root;
 
              while (nptr != null) {
-                 if (node.key < nptr.key) {
-                     if (nptr.leftChild == null) {
+
+                 //if keys match, name already exists in BST, update
+                 //the address and phone number
+                 if (node.key == nptr.key) {
+                     nptr.address = node.address;
+                     nptr.phoneNumber = node.phoneNumber;
+                     return;
+                 }
+
+                 else if (node.key < nptr.key) { //if node key is smaller, search left subtree
+                     if (nptr.leftChild == null) { //if left child doesn't exist, add node as leaf
                          nptr.leftChild = new BSTNode(node);
                          return;
                      } else {
@@ -40,8 +64,8 @@ class BST {
                      }
 
 
-                 } else if (node.key > nptr.key) {
-                     if (nptr.rightChild == null) {
+                 } else if (node.key > nptr.key) { //if node key is larger, search right subtree
+                     if (nptr.rightChild == null) { //if right child doesn't exist, add node as leaf
                          nptr.rightChild = new BSTNode(node);
                          return;
                      } else {
@@ -53,6 +77,19 @@ class BST {
      }
 
 
+    /**
+     * Search for the node with a matching name as
+     * node. If such a node is found, update the node
+     * with new information
+     *
+     * @param node Node to be updated.
+     */
+    void update(PersonNode node) {
+        if( search(node.name) != null) { //if name is found, readd name to the BST
+            System.out.println("Updating information.");
+            add(new BSTNode(node));
+        }
+    }
 
 
     /**
@@ -64,11 +101,10 @@ class BST {
     void display(BSTNode root) {
         if (root != null) {
             display(root.leftChild);
-            System.out.println("-> " + root.name);
+            System.out.println("-> " + root.name + ", " + root.address + ", " + root.phoneNumber);
             display(root.rightChild);
         }
     }
-
 
 
     /**
@@ -81,16 +117,16 @@ class BST {
      */
     BSTNode search(String searchName) {
 
-        int searchKey = Math.abs(searchName.hashCode());
+        int searchKey = Math.abs(searchName.hashCode()); //generate hash code based on search name
         BSTNode nptr = root;
 
         while (nptr != null) {
-            if (nptr.key == searchKey) {
+            if (nptr.key == searchKey) { //match found, return BSTNode
                 return nptr;
             } else {
-                if (searchKey < nptr.key) {
+                if (searchKey < nptr.key) { //searchKey smaller, move left
                     nptr = nptr.leftChild;
-                } else if (searchKey > nptr.key) {
+                } else if (searchKey > nptr.key) { //searchKey larger, move right
                     nptr = nptr.rightChild;
                 }
             }
@@ -99,7 +135,6 @@ class BST {
         return null;
 
     }
-
 
 
     /**
@@ -112,7 +147,6 @@ class BST {
         int delKey = Math.abs(delString.hashCode());
         root = delete(delKey, root);
     }
-
 
 
     /**
@@ -151,8 +185,6 @@ class BST {
     }
 
 
-
-
     /**
      * Returns the node with the smallest value rooted
      * at node.
@@ -160,18 +192,17 @@ class BST {
      * @param node root node of BST
      * @return Leftmost node of tree rooted at node
      */
-    BSTNode minValue(BSTNode node) {
-        if (node == null) {
+    private BSTNode minValue(BSTNode node) {
+        if (node == null) { //node empty, no children
             return null;
         }
-        else if (node.leftChild == null) {
+        else if (node.leftChild == null) { //if no left child, return node
             return node;
         }
         else {
-            return minValue(node.leftChild);
+            return minValue(node.leftChild);//continue moving through left children
         }
     }
-
 
 
     /**
@@ -181,9 +212,11 @@ class BST {
      * @param root Root node of BST to be printed
      * @param bw BufferedWriter of outputFile.
      */
-    void printToFile(BSTNode root, BufferedWriter bw) {
+    void printToFile(BSTNode root, BufferedWriter bw){
         try {
             if (root!= null) {
+                //use the same in-order technique used to traverse
+                //the BST to recursively print nodes to the file
                 printToFile(root.leftChild, bw);
                 bw.write(((PersonNode)root).toString());
                 bw.newLine();
@@ -204,10 +237,16 @@ class BST {
          * data.
          */
 
-
+        //Class members
         BSTNode leftChild;
         BSTNode rightChild;
 
+        /**
+         * Construct a BSTNode using the information
+         * extracted from the Node to be wrapped.
+         *
+         * @param node Node to be encapsulated by BSTNode
+         */
         BSTNode(PersonNode node) {
             this.name = node.name;
             this.address = node.address;

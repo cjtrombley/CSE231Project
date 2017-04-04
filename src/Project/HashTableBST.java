@@ -5,11 +5,17 @@ package Project;
  */
 public class HashTableBST {
 
+    //Class members
     private final int HASHSIZE = 7;
     private BST[] hashTable;
 
-    HashTableBST() {
 
+    /**
+     * Default constructor. Create new array of
+     * size HASHSIZE and for each index of the array,
+     * initialize a new BST.
+     */
+    HashTableBST() {
         hashTable = new BST[HASHSIZE];
         for(int i = 0; i < HASHSIZE; i++) {
             hashTable[i] = new BST();
@@ -33,6 +39,18 @@ public class HashTableBST {
         return hashTable[searchHash].search(key);
     }
 
+    void update(PersonNode node) {
+        PersonNode searchNode = search(node.name);
+        if(searchNode != null) {
+            System.out.println("Updating information.");
+            searchNode.address = node.address;
+            searchNode.phoneNumber = node.phoneNumber;
+
+        }
+        else {
+            System.out.println("Name not found.");
+        }
+    }
 
 
     void delete(String delName) {

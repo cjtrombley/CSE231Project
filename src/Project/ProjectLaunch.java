@@ -49,7 +49,7 @@ public class ProjectLaunch {
             }
             bw = new BufferedWriter ( new FileWriter ( outputFile));
 
-            pl.phoneBook = new TelephoneBook(sc.nextInt(), br, bw);
+            pl.phoneBook = new TelephoneBook(Integer.parseInt(sc.nextLine()), br, bw, sc);
 
             br.close();
         } catch (IOException e) {
@@ -60,20 +60,22 @@ public class ProjectLaunch {
         while (continueProgram) {
             pl.displayMenu();
             try {
-                int selection = sc.nextInt();
+                int selection = Integer.parseInt(sc.nextLine());
 
                 switch(selection) {
                     case 1: pl.phoneBook.add();
                         break;
                     case 2: pl.phoneBook.search();
                         break;
-                    case 3: pl.phoneBook.delete();
+                    case 3: pl.phoneBook.update();
                         break;
-                    case 4: pl.phoneBook.display();
+                    case 4: pl.phoneBook.delete();
                         break;
-                    case 5: pl.phoneBook.save();
+                    case 5: pl.phoneBook.display();
                         break;
-                    case 6:
+                    case 6: pl.phoneBook.save();
+                        break;
+                    case 7:
                             System.out.println("Program now exiting.");
                             continueProgram = false;
                             break;
@@ -96,10 +98,11 @@ public class ProjectLaunch {
 	    System.out.println("\nMain menu for " + phoneBook.getType().toString());
 	    System.out.println("1: Insert telephone number.");
 	    System.out.println("2: Retrieve telephone number.");
-	    System.out.println("3: Delete telephone number.");
-	    System.out.println("4: Display phone book");
-	    System.out.println("5: Save phone book to file. ");
-	    System.out.println("6: Exit program.");
+	    System.out.println("3: Update telephone number.");
+	    System.out.println("4: Delete telephone number.");
+	    System.out.println("5: Display phone book");
+	    System.out.println("6: Save phone book to file. ");
+	    System.out.println("7: Exit program.");
 	    System.out.println("------------------------------------");
 	    System.out.print("Please enter a selection: ");
     }

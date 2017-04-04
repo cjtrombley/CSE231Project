@@ -8,13 +8,13 @@ public class HashTableLinearProbing {
     PersonNode[] hashTable;
 
     private int rehashCounter = 0;
-    private double rehashFactor;
+    private final double REHASHFACTOR = .25;
 
 
-    HashTableLinearProbing(int tableSize, int rehashFactor)
+    HashTableLinearProbing(int tableSize)
     {
         hashTable = new PersonNode[tableSize];
-        this.rehashFactor = rehashFactor / 100;
+
     }
 
 
@@ -22,25 +22,48 @@ public class HashTableLinearProbing {
         int nodeHash = Math.abs(node.name.hashCode()) % hashTable.length;
         int counter = 0;
         while (hashTable[nodeHash] != null && hashTable[nodeHash].key != -1) {
-            nodeHash++;
 
-            if(nodeHash == hashTable.length) {
-                nodeHash = 0;
+            //If name already exists in the table, update node with
+            //new node address/phone number
+            if (hashTable[nodeHash].name.equals(node.name)) {
+
+                hashTable[nodeHash].address = node.address;
+                hashTable[nodeHash].phoneNumber = node.phoneNumber;
+                return;
             }
+            else {
 
-            counter++;
-            if(counter == hashTable.length) {
-                doubleArray();
-                System.out.println("Doubled array to size " + hashTable.length);
-                counter = 0;
+                nodeHash++;
+                if (nodeHash == hashTable.length) {
+                    nodeHash = 0;
+                }
+
+                counter++;
+
+                if (counter == hashTable.length) {
+                    doubleArray();
+                    nodeHash = Math.abs(node.name.hashCode() % hashTable.length);
+                    System.out.println("Doubled array to size " + hashTable.length);
+                    counter = 0;
+                }
             }
-
-
         }
 
         hashTable[nodeHash] = node;
     }
 
+    void update(PersonNode node) {
+        PersonNode searchPerson = search(node.name);
+
+        if(searchPerson != null) {
+            System.out.println("Updating information.");
+            searchPerson.address = node.address;
+            searchPerson.phoneNumber = node.phoneNumber;
+        }
+        else {
+            System.out.println("Name not found.");
+        }
+    }
 
     void display() {
         for(int i = 0; i < hashTable.length; i++) {
@@ -49,7 +72,6 @@ public class HashTableLinearProbing {
             }
         }
     }
-
 
     PersonNode search(String searchName){
         int searchHash = Math.abs(searchName.hashCode()) % hashTable.length;
@@ -92,7 +114,7 @@ public class HashTableLinearProbing {
 
 
                 rehashCounter++;
-                if(rehashCounter == (int)(hashTable.length) / rehashFactor) {
+                if(rehashCounter == (int)(hashTable.length * REHASHFACTOR)) {
                     rehash();
                 }
             }
@@ -128,7 +150,26 @@ public class HashTableLinearProbing {
 
 
     private void rehash() {
+        System.out.println("Rehashing the table.");
 
+        PersonNode[] temp = new PersonNode[hashTable.length];
 
+        for(PersonNode node : hashTable) {
+
+            if(node.key != -1) {
+                int newHash = Math.abs(node.name.hashCode() % hashTable.length);
+                while (temp[newHash] != null) {
+                    newHash++;
+
+                    if (newHash == hashTable.length) {
+                        newHash = 0;
+                    }
+                }
+
+                temp[newHash] = node;
+            }
+        }
+
+        hashTable = temp;
     }
 }
