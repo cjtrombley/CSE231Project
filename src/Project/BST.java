@@ -23,6 +23,7 @@ class BST {
 
     //Class members
     BSTNode root;
+    static int counter = 0;
 
 
     /**
@@ -39,13 +40,13 @@ class BST {
      * @param node Node to be added to BST.
      */
     void add(PersonNode node) {
-         if (root == null) {
+        if (root == null) {
              root = new BSTNode(node);
          } else {
 
              BSTNode nptr = root;
 
-             while (nptr != null) {
+             while (true) { //loop forever until first empty leaf location is found
 
                  //if keys match, name already exists in BST, update
                  //the address and phone number
@@ -78,9 +79,9 @@ class BST {
 
 
     /**
-     * Search for the node with a matching name as
-     * node. If such a node is found, update the node
-     * with new information
+     * Search for the node with a name matching param
+     * node's name. If such a node is found, update the
+     * node with new information.
      *
      * @param node Node to be updated.
      */
@@ -113,7 +114,7 @@ class BST {
      *
      *
      * @param searchName Name to be searched
-     * @return Node with name matching search param
+     * @return Node with name matching search param, null if not found
      */
     BSTNode search(String searchName) {
 
@@ -218,7 +219,7 @@ class BST {
                 //use the same in-order technique used to traverse
                 //the BST to recursively print nodes to the file
                 printToFile(root.leftChild, bw);
-                bw.write(((PersonNode)root).toString());
+                bw.write((root).toString());
                 bw.newLine();
                 bw.flush();
                 printToFile(root.rightChild, bw);
@@ -229,13 +230,12 @@ class BST {
     }
 
 
-
+    /**
+     * Private internal class representing
+     * a single BinarySearchTree node of
+     * data.
+     */
     private class BSTNode extends PersonNode {
-        /**
-         * Private internal class representing
-         * a single BinarySearchTree node of
-         * data.
-         */
 
         //Class members
         BSTNode leftChild;

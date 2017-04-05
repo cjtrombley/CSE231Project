@@ -1,3 +1,6 @@
+package Project;
+
+
 /**
  * PersonNode
  *
@@ -7,9 +10,6 @@
  * @author      Cody Trombley
  *
  */
-
-package Project;
-
 class PersonNode {
 
     //Class members

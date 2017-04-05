@@ -1,15 +1,25 @@
-/**
- * Created by cjt on 3/10/2017.
- */
-
-
 package Project;
 
 import java.io.*;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-
+/**
+ * TelephoneBook
+ *
+ * This class provides the base functionality for the Phone Book.
+ * Regardless of which data structure is used in the phone book,
+ * each structure implements the same following public methods:
+ *
+ * add()
+ * update()
+ * search()
+ * delete()
+ * display()
+ * save()
+ *
+ *@author   Cody Trombley
+ */
 class TelephoneBook {
 
     //Class members
@@ -69,14 +79,18 @@ class TelephoneBook {
     }
 
     /**
-     *
+     * Initialize the phone book. Read in lines
+     * from the input file and add them to the
+     * appropriate phone book structure.
      *
      */
     private void init() {
         try {
-            String line = inputFile.readLine();
+            String line = inputFile.readLine(); //read from input file
             while (line != null) {
-                PersonNode node = new PersonNode(line);
+                PersonNode node = new PersonNode(line); //create a new new node from line
+
+                //add node to data structure
                 switch (this.bookType) {
                     case BINARYSEARCHTREE:
                         bst.add(node);
@@ -91,13 +105,14 @@ class TelephoneBook {
                         break;
 
                     case HASHTABLELINEARPROBING:
-                            hashTableLinearProbing.add(node);
-                            break;
+                        hashTableLinearProbing.add(node);
+                        break;
 
                     default:
                         break;
                 }
 
+                //read in the next line in the file
                 line = inputFile.readLine();
             }
         } catch (IOException e) {
@@ -105,9 +120,18 @@ class TelephoneBook {
         }
     }
 
+
+    /**
+     * Add node to the phone book. Prompt user
+     * to input name, address, and phone number
+     * information, then create a new node and
+     * add it to the appropriate phone book
+     * structure.
+     *
+     */
     void add() {
 
-        String name, address, phoneNum;
+        String name, address, phoneNum; //input vars
 
         System.out.print("Enter person's name: ");
         name = sc.nextLine();
@@ -118,8 +142,9 @@ class TelephoneBook {
         System.out.print("Enter person's phone number: ");
         phoneNum = sc.nextLine();
 
-        PersonNode node = new PersonNode(name + "," + address + "," + phoneNum);
+        PersonNode node = new PersonNode(name + "," + address + "," + phoneNum); //create new node
 
+        //add node to proper data structure
         switch (this.bookType) {
             case BINARYSEARCHTREE:
                 bst.add(node);
@@ -142,20 +167,30 @@ class TelephoneBook {
         }
     }
 
+
+    /**
+     * Update an existing node in the phone book.
+     * Prompt the user to enter a name, followed by
+     * an updated address and phone number. Find the
+     * node if it exists and update the data
+     * accordingly.
+     */
     void update() {
+        String updateName, newAddress, newNumber; //local input vars
+
         System.out.print("Enter name to be updated: ");
-        String newName = sc.nextLine();
+        updateName = sc.nextLine();
 
         System.out.print("Enter new address: ");
-        String newAddress = sc.nextLine();
+        newAddress = sc.nextLine();
 
         System.out.print("Enter new phone number: ");
-        String newNumber = sc.nextLine();
+        newNumber = sc.nextLine();
 
+        //create new node based on input vars
+        PersonNode updatedNode = new PersonNode(updateName + "," + newAddress + ", " + newNumber);
 
-        PersonNode updatedNode = new PersonNode(newName + "," + newAddress + ", " + newNumber);
-
-
+        //update the node in the proper data structure
         switch (this.bookType) {
             case BINARYSEARCHTREE:
                 bst.update(updatedNode);
@@ -175,21 +210,29 @@ class TelephoneBook {
 
             default:
                 break;
-
-
         }
     }
 
+
+    /**
+     * Search for a name in the phone book. Prompt user
+     * to enter name to search for. Search for the node
+     * matching search parameter and print it to the
+     * console.
+     */
     void search() {
+        String key; //local input var
 
         System.out.print("Enter the full name to search: ");
 
-        String key = sc.nextLine();
+        key = sc.nextLine();
         PersonNode searchPerson = null;
 
+        //search the appropriate data structure for the node
+        //matching the key
         switch (this.bookType) {
             case BINARYSEARCHTREE:
-                searchPerson = (PersonNode)bst.search(key);
+                searchPerson = bst.search(key);
                 break;
 
             case HASHTABLELINKEDLIST:
@@ -207,7 +250,7 @@ class TelephoneBook {
             default:
                 break;
         }
-        if (searchPerson != null) {
+        if (searchPerson != null) { //print string representation of located node
             System.out.println(searchPerson.toString());
         }
         else {
@@ -215,12 +258,19 @@ class TelephoneBook {
         }
     }
 
+
+    /**
+     * Delete a name from the phone book. Prompt user to
+     * enter a name to delete. Search for the node and, if
+     * found, remove it from the data structure.
+     */
     void delete() {
+        String delName; //local input var
 
         System.out.print("Enter the name to be deleted: ");
+        delName = sc.nextLine();
 
-        String delName = sc.nextLine();
-
+        //delete name from appropriate data structure
         switch (this.bookType) {
             case BINARYSEARCHTREE:
                 bst.remove(delName);
@@ -232,16 +282,24 @@ class TelephoneBook {
 
             case HASHTABLEBST:
                 hashTableBST.delete(delName);
+                break;
 
             case HASHTABLELINEARPROBING:
                 hashTableLinearProbing.delete(delName);
+                break;
 
             default:
                 break;
         }
     }
 
+
+    /**
+     * Print the phone book to the console window.
+     */
     void display() {
+
+        //Pring the appropriate structure
         switch (this.bookType) {
             case BINARYSEARCHTREE:
                 bst.display(bst.root);
@@ -266,22 +324,39 @@ class TelephoneBook {
         }
     }
 
+    /**
+     * Save the phone book to output file.
+     */
     void save() {
-            switch (this.bookType) {
+        //save based on the appropriate data structure
+        switch (this.bookType) {
+            case BINARYSEARCHTREE:
+                bst.printToFile(bst.root, outputFile);
+                break;
 
-                case HASHTABLELINKEDLIST:
-                    hashTableLinkedList.printToFile(outputFile);
-                    break;
-                default:
-                    bst.printToFile(bst.root, outputFile);
-                    break;
-            }
+            case HASHTABLELINKEDLIST:
+                hashTableLinkedList.printToFile(outputFile);
+                break;
 
+            case HASHTABLEBST:
+                hashTableBST.printToFile(outputFile);
+                break;
 
+            case HASHTABLELINEARPROBING:
+                hashTableLinearProbing.printToFile(outputFile);
+
+            default:
+                break;
+        }
     }
+
 
     BookType getType() { return bookType; }
 
+
+    /**
+     * Emum defining BookType objects.
+     */
     public enum BookType {
         BINARYSEARCHTREE ("Binary Search Tree"),
         HASHTABLELINKEDLIST ("Hash Table - Linked List"),

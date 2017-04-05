@@ -1,3 +1,7 @@
+package Project;
+
+import java.io.*;
+
 /**
  * HashTableLinkedList
  *
@@ -11,14 +15,9 @@
  * search()
  * delete()
  * printToFile()
+ *
+ * @author      Cody Trombley
  */
-
-
-package Project;
-
-
-import java.io.*;
-
 class HashTableLinkedList {
 
     //Class members
@@ -68,7 +67,7 @@ class HashTableLinkedList {
 
     /**
      * Iterate through the HashTable and print the LinkedList
-     * stored at each index.
+     * stored at each index to the console window.
      */
     void display() {
         for (int i = 0; i < HASHSIZE; i++) {
@@ -114,6 +113,7 @@ class HashTableLinkedList {
      * @param bw    BufferedWriter attatched to output File
      */
     void printToFile(BufferedWriter bw) {
+        System.out.println("Saving HashTable to file.");
         try{
             for (int i = 0; i < HASHSIZE; i++) { //iterate through each index of the hash table
                 PersonNode nptr = hashTable[i].head;

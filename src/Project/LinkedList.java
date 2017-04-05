@@ -1,3 +1,5 @@
+package Project;
+
 /**
  * LinkedList
  *
@@ -10,10 +12,9 @@
  * update()
  * remove()
  * toString()
+ *
+ * @author      Cody Trombley
  */
-
-package Project;
-
 class LinkedList {
 
     //Class members

@@ -1,16 +1,17 @@
-/**
- * Created by cjt on 3/10/2017.
- */
-
-
 package Project;
 
 import java.io.*;
 import java.util.Scanner;
 
+
+/**
+ * ProjectLaunch
+ *
+ * This class is the
+ */
 public class ProjectLaunch {
 
-  TelephoneBook phoneBook;
+  private TelephoneBook phoneBook;
 
 
     /**
@@ -21,12 +22,15 @@ public class ProjectLaunch {
      *        args[1] - Name of output file
      */
 	public static void main(String[] args) {
+        if(args.length != 2) {
+            System.err.println("Not enough arguments. Program terminated.");
+            return;
+        }
 
         ProjectLaunch pl = new ProjectLaunch();
         Scanner sc = new Scanner(System.in);
-        BufferedReader br = null;
-        BufferedWriter bw = null;
-
+        BufferedReader br;
+        BufferedWriter bw;
         System.out.println("Thank you for using TelephoneBook v1.0");
         System.out.println();
         System.out.println("1: Binary Search Tree");
@@ -45,7 +49,9 @@ public class ProjectLaunch {
 
             File outputFile = new File(args[1]);
             if(!outputFile.exists()) {
-                outputFile.createNewFile();
+                if(outputFile.createNewFile()){
+                    System.out.println("Created new output file.");
+                };
             }
             bw = new BufferedWriter ( new FileWriter ( outputFile));
 
